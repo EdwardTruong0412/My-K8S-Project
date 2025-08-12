@@ -1,0 +1,9 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: webapps # Role này chỉ có hiệu lực trong namespace webapps
+  name: pod-reader
+rules:
+- apiGroups: [""] # "" chỉ nhóm API core của Kubernetes
+  resources: ["pods", "services"] # Các tài nguyên được áp dụng
+  verbs: ["get", "watch", "list"] # Các hành động được phép

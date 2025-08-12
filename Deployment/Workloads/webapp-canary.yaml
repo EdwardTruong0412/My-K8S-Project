@@ -1,0 +1,63 @@
+# --- PHIÊN BẢN ỔN ĐỊNH ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-stable
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webapp
+      version: stable
+  template:
+    metadata:
+      labels:
+        app: webapp
+        version: stable
+    spec:
+      containers:
+      - name: webapp
+        image: nginxdemos/hello:0.2 # Giả lập phiên bản 1.0 (màu xanh)
+        # --- BỔ SUNG RESOURCES ---
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m" # 100 millicores (0.1 core)
+          limits:
+            memory: "128Mi"
+            cpu: "250m" # 250 millicores (0.25 core)
+        # ------------------------
+        ports:
+        - containerPort: 80
+---
+# --- PHIÊN BẢN MỚI (CANARY) ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-canary
+spec:
+  replicas: 1 # Ban đầu chỉ cần 1 replica cho canary
+  selector:
+    matchLabels:
+      app: webapp
+      version: canary
+  template:
+    metadata:
+      labels:
+        app: webapp
+        version: canary
+    spec:
+      containers:
+      - name: webapp
+        image: nginxdemos/hello:0.3 # Giả lập phiên bản 1.1 (màu hồng)
+        # --- BỔ SUNG RESOURCES ---
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        # ------------------------
+        ports:
+        - containerPort: 80

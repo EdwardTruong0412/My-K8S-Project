@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-rolling
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webapp-rolling
+  # --- CHIẾN LƯỢC ROLLING UPDATE ---
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1 # Cho phép tạo tối đa 1 Pod mới vượt quá số replicas
+      maxUnavailable: 1 # Cho phép tối đa 1 Pod cũ không khả dụng trong quá trình cập nhật
+  # --------------------------------
+  template:
+    metadata:
+      labels:
+        app: webapp-rolling
+        version: "1.0" # Thêm label version để Prometheus có thể nhận diện
+    spec:
+      containers:
+      - name: webapp
+        image: nginxdemos/hello:0.3 # Image hiển thị thông tin, giả lập version 1.0
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m" # 100 millicores (0.1 core)
+          limits:
+            memory: "128Mi"
+            cpu: "250m" # 250 millicores (0.25 core)
+        ports:
+        - containerPort: 80

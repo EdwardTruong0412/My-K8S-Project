@@ -1,0 +1,35 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: webapp-routes
+spec:
+  parentRefs:
+  - name: external-gateway
+  hostnames: ["app.example.com"]
+  rules:
+  # --- Regel 1: Rolling Update App auf /rolling ---
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /rolling
+    backendRefs:
+    - name: webapp-rolling-svc
+      port: 80
+  # --- Regel 2: Canary Deployment auf / ---
+  # Gửi 95% traffic đến bản stable, 5% đến bản canary
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: webapp-svc
+      port: 80
+      weight: 95
+      # Điều hướng đến các pod có version=stable
+      # Cần Gateway Controller hỗ trợ backend-specific routing hoặc dùng Service Mesh
+    - name: webapp-svc 
+      port: 80
+      weight: 5
+      # Điều hướng đến các pod có version=canary
+      # Cách thực hiện chính xác phụ thuộc vào Gateway Controller
+      # Cách đơn giản hơn là tạo 2 service riêng biệt (stable-svc, canary-svc)

@@ -1,0 +1,11 @@
+# --- Yêu cầu không gian lưu trữ ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce # Chỉ cho phép một node đọc/ghi tại một thời điểm
+  resources:
+    requests:
+      storage: 8Gi # Yêu cầu 8GB dung lượng

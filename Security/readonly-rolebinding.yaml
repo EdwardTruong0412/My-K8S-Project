@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods-binding
+  namespace: webapps # RoleBinding cũng phải ở trong cùng namespace với Role
+subjects:
+- kind: User # Loại chủ thể là User
+  name: dev-user # Tên của người dùng
+  apiGroup: rbac.authorization.k8s.io
+roleRef: # Tham chiếu đến Role cần gắn
+  kind: Role
+  name: pod-reader # Tên của Role đã tạo ở trên
+  apiGroup: rbac.authorization.k8s.io

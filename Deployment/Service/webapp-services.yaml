@@ -1,0 +1,26 @@
+# --- Service cho Rolling Update App ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-rolling-svc
+spec:
+  selector:
+    app: webapp-rolling
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+# --- Service cho Stable/Canary/Blue/Green App ---
+# Chúng ta chỉ cần 1 Service, Gateway API sẽ quyết định trỏ đến Pod nào
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-svc # Một service chung
+spec:
+  selector:
+    app: webapp # Service này sẽ chọn tất cả các pod có label app=webapp
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
